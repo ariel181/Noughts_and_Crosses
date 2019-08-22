@@ -67,30 +67,17 @@ void MainWindow::userWin()
         userName = ui->leO->text();
     }
 
-
     const QString text = tr("Won by: %1.\n\nDo you want to start a new game?").arg(userName);
-   int rec =  QMessageBox::information(this,tr("Congratulations"),text,QMessageBox::Yes | QMessageBox::No,QMessageBox::Yes);
-
-   if(rec==QMessageBox::Yes) {
-       resetBord();
-   } else {
-       close();
-   }
+    showMessage(text);
 
 }
 
 void MainWindow::userDraw()
 {
-    qDebug()<<"Draw";
 
+   qDebug()<<"Draw";
    const QString text = tr("The game ended in a draw.\n\nDo you want to start a new game?");
-   int rec =  QMessageBox::information(this,tr("Congratulations"),text,QMessageBox::Yes | QMessageBox::No,QMessageBox::Yes);
-
-   if(rec==QMessageBox::Yes) {
-       resetBord();
-   } else {
-       close();
-   }
+   showMessage(text);
 
 }
 
@@ -183,6 +170,12 @@ void MainWindow::resetBord()
 
 }
 
+void MainWindow::showMessage(const QString text)
+{
+    ui->laMessage->setText(text);
+    ui->stackedWidget->setCurrentIndex(2);
+}
+
 void MainWindow::on_pbBackMenu_clicked()
 {
     resetBord();
@@ -196,10 +189,23 @@ void MainWindow::on_pbBackMenu_clicked()
     ui->leO->setText("");
     ui->leX->setText("");
 
+    ui->laMessage->setText(text);
+
     _scoreCross = 0;
     _scoreNoughts = 0;
 
     ui->stackedWidget->setCurrentIndex(0);
 
 
+}
+
+void MainWindow::on_pbBackMenu_2_clicked()
+{
+    on_pbBackMenu_clicked();
+}
+
+void MainWindow::on_pbPlay_clicked()
+{
+    resetBord();
+    ui->stackedWidget->setCurrentIndex(1);
 }

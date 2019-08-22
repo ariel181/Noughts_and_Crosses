@@ -71,6 +71,10 @@ private slots:
      */
     void on_pbBackMenu_clicked();
 
+    void on_pbBackMenu_2_clicked();
+
+    void on_pbPlay_clicked();
+
 private:
     /**
      * @brief Change the current user to the next player.
@@ -82,6 +86,7 @@ private:
      *
      */
     void resetBord();
+    void showMessage(const QString text);
 
     Ui::MainWindow *ui;
     QSignalMapper* _signalMapper; /**< Mapper storing signals buttons */
