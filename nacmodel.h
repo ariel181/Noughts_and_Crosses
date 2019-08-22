@@ -9,7 +9,7 @@ class NACModel : public QObject
 {
     Q_OBJECT
 public:
-    explicit NACModel(QObject *parent = 0);
+    explicit NACModel(QObject *parent = nullptr);
 
 signals:
     void NotifyUserWin();

@@ -51,6 +51,6 @@ bool NACModel::isWin(Item item)
 
 bool NACModel::isDraw()
 {
-    for(int i = 1; i <= 9; i++) if(_board[i] == Item::Non) return false;
+    for(int i = 0; i < 9; i++) if(_board[i] == Item::Non) return false;
     return true;
 }
