@@ -5,7 +5,6 @@ NACModel::NACModel(QObject *parent) : QObject(parent)
   ,_board(10,Item::Non)
 {
 
-//    qDebug()<<_board;
 
 }
 

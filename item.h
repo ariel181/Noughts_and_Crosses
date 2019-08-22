@@ -5,6 +5,10 @@
 
  Q_ENUMS(Item);
 
+/**
+ * @brief
+ *
+ */
 enum class Item {
 
     Non,
