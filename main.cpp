@@ -9,7 +9,6 @@ int main(int argc, char *argv[])
     MainWindow w;
 
     QObject::connect(&w,SIGNAL(NotifyUserMove(int,Item)),&nac,SLOT(userMove(int,Item)));
-    QObject::connect(&w,SIGNAL(NotifyResetGame()),&nac,SLOT(userMove(int,Item)));
 
     QObject::connect(&nac,SIGNAL(NotifyUserWin()),&w,SLOT(userWin()));
     QObject::connect(&nac,SIGNAL(NotifyUserDraw()),&w,SLOT(userDraw()));

@@ -18,12 +18,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 signals:
     void NotifyUserMove(int,Item);
-    void NotifyResetGame();
 
 public slots:
     void userWin();
@@ -34,7 +33,9 @@ private slots:
     void clicked(int idx );
     bool isValid();
 
-    private:
+    void on_pbBackMenu_clicked();
+
+private:
     void changeUser();
     bool isUserWon();
     void resetBord();

@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QMessageBox>
@@ -39,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     ui->stackedWidget->setCurrentIndex(0);
+
+    changeUser();
 }
 
 MainWindow::~MainWindow()
@@ -71,17 +73,25 @@ void MainWindow::userWin()
 
    if(rec==QMessageBox::Yes) {
        resetBord();
-       emit NotifyResetGame();
    } else {
        close();
    }
-
 
 }
 
 void MainWindow::userDraw()
 {
     qDebug()<<"Draw";
+
+   const QString text = tr("The game ended in a draw.\n\nDo you want to start a new game?");
+   int rec =  QMessageBox::information(this,tr("Congratulations"),text,QMessageBox::Yes | QMessageBox::No,QMessageBox::Yes);
+
+   if(rec==QMessageBox::Yes) {
+       resetBord();
+   } else {
+       close();
+   }
+
 }
 
 void MainWindow::on_pbStartGame_clicked()
@@ -148,10 +158,6 @@ bool MainWindow::isValid()
 
 void MainWindow::changeUser()
 {
-    const QString name = (_player == Item::Crosses ) ? ui->leX->text() : ui->leO->text();
-    const QString text = QString("Make the next move %1").arg(name);
-
-    ui->laMove->setText(text);
 
     if(_player == Item::Crosses) {
         _player = Item::Noughts;
@@ -159,6 +165,9 @@ void MainWindow::changeUser()
         _player = Item::Crosses;
     }
 
+    const QString name = (_player == Item::Crosses ) ? ui->leX->text() : ui->leO->text();
+    const QString text = QString("Make the move %1").arg(name);
+    ui->laMove->setText(text);
 }
 
 void MainWindow::resetBord()
@@ -171,5 +180,26 @@ void MainWindow::resetBord()
         pb->setText("");
 
     }
+
+}
+
+void MainWindow::on_pbBackMenu_clicked()
+{
+    resetBord();
+    const QString text("-----");
+    ui->laScoreCross->setText(text);
+    ui->laScoreNought->setText(text);
+    ui->laCross->setText(text);
+    ui->laNoughts->setText(text);
+    ui->laMove->setText(text);
+
+    ui->leO->setText("");
+    ui->leX->setText("");
+
+    _scoreCross = 0;
+    _scoreNoughts = 0;
+
+    ui->stackedWidget->setCurrentIndex(0);
+
 
 }
