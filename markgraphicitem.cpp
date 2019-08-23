@@ -3,7 +3,7 @@
 #include <QDebug>
 
 
-MarkGraphicItem::MarkGraphicItem(QObject* parent):QGraphicsObject()
+MarkGraphicItem::MarkGraphicItem(QGraphicsItem* parent):QGraphicsObject(parent)
   ,_rect(0,0,128,128)
   ,_isHover(false)
   ,_isMakred(false)
@@ -22,12 +22,21 @@ QRectF MarkGraphicItem::boundingRect() const
 void MarkGraphicItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     painter->save();
     QPen pen = painter->pen();
     QTextOption texOpt(Qt::AlignCenter);
+    QBrush brush(QColor("#FFF"));
     QFont font;
     font.setPointSize(32);
     pen.setColor(QColor("#000"));
+
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(brush);
+    painter->drawRect(_rect);
+
     painter->setPen(pen);
     painter->setFont(font);
 
@@ -40,7 +49,6 @@ void MarkGraphicItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
         painter->drawText(_rect,_mark,texOpt);
     }
 
-    painter->drawRect(_rect);
     painter->restore();
 
 }
@@ -59,7 +67,6 @@ void MarkGraphicItem::reset()
 
 void MarkGraphicItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    qDebug()<<__PRETTY_FUNCTION__;
     _isHover = true;
     update();
     QGraphicsObject::hoverEnterEvent(event);
@@ -67,7 +74,6 @@ void MarkGraphicItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 
 void MarkGraphicItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    qDebug()<<__PRETTY_FUNCTION__;
     _isHover = false;
     update();
     QGraphicsObject::hoverLeaveEvent(event);
@@ -75,10 +81,13 @@ void MarkGraphicItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
 void MarkGraphicItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    _isMakred = true;
-    _mark = getActualMark();
-    update();
-    qDebug()<<__PRETTY_FUNCTION__;
+    if(!_isMakred) {
+        _isMakred = true;
+        _mark = getActualMark();
+        update();
+        emit NotifyClicked();
+    }
+    QGraphicsObject::mousePressEvent(event);
 }
 
 QString MarkGraphicItem::getActualMark()

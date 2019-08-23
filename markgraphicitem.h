@@ -8,8 +8,10 @@
 
 class MarkGraphicItem : public QGraphicsObject
 {
+
+    Q_OBJECT
 public:
-    MarkGraphicItem(QObject *parent);
+    MarkGraphicItem(QGraphicsItem *parent = nullptr);
 
     // QGraphicsItem interface
 public:
@@ -17,6 +19,9 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void setPlayer(const Item item);
     void reset();
+
+signals:
+    void NotifyClicked();
 
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
