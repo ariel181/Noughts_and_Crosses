@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QMessageBox>
+#include "markgraphicitem.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -10,9 +11,13 @@ MainWindow::MainWindow(QWidget *parent) :
   ,_player(Item::Crosses)
   ,_scoreCross(0)
   ,_scoreNoughts(0)
+  ,_screen(new QGraphicsScene())
 {
     ui->setupUi(this);
 
+    ui->graphicsView->setScene(_screen);
+    ui->graphicsView->setMouseTracking(true);
+    _screen->addItem(new MarkGraphicItem(this));
 
     QFont font;
     font.setPointSize(32);

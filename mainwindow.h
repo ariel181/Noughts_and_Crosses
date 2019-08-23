@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSignalMapper>
 #include <QPushButton>
+#include <QGraphicsScene>
 #include "item.h"
 
 
@@ -91,8 +92,9 @@ private:
     Ui::MainWindow *ui;
     QSignalMapper* _signalMapper; /**< Mapper storing signals buttons */
     Item _player; /**< Actual player*/
-    int _scoreCross; /**< TODO: describe */
-    int _scoreNoughts; /**< TODO: describe */
+    int _scoreCross;
+    int _scoreNoughts;
+    QGraphicsScene* _screen;
 
 
 };
