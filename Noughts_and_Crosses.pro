@@ -23,3 +23,8 @@ HEADERS  += mainwindow.h \
     markgraphicitem.h
 
 FORMS    += mainwindow.ui
+
+CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
+
+DISTFILES += \
+    README.md
