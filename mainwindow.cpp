@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QMessageBox>
+#include <QGraphicsItem>
+#include "markgraphicitem.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -10,36 +12,16 @@ MainWindow::MainWindow(QWidget *parent) :
   ,_player(Item::Crosses)
   ,_scoreCross(0)
   ,_scoreNoughts(0)
+  ,_screen(new QGraphicsScene())
 {
     ui->setupUi(this);
 
-
-    QFont font;
-    font.setPointSize(32);
-
-    QGridLayout* lay = qobject_cast<QGridLayout*>(ui->frBoard->layout());
-
-    for (int i = 0; i < 9; ++i) {
-        QPushButton *pb = new QPushButton("");
-        const QString objName = "pb_" + QString::number(i+1);
-        pb->setObjectName(objName);
-        pb->setMinimumSize(QSize(128, 128));
-        pb->setMaximumSize(QSize(128, 128));
-        pb->setFont(font);
-
-        connect(pb, SIGNAL(clicked()), _signalMapper, SLOT(map()));
-        _signalMapper->setMapping(pb, i);
-
-        lay->addWidget(pb, i / 3, i % 3);
-
-    }
-
-    connect(_signalMapper, SIGNAL(mapped(int)),
-            this, SLOT(clicked(int)));
-
+    ui->graphicsView->setScene(_screen);
+    ui->graphicsView->setMouseTracking(true);
 
     ui->stackedWidget->setCurrentIndex(0);
 
+    init();
     changeUser();
 }
 
@@ -94,21 +76,8 @@ void MainWindow::on_pbStartGame_clicked()
 
 void MainWindow::clicked(int idx)
 {
-
-    QObject* obj = _signalMapper->mapping(idx);
-
-    QPushButton* pb = qobject_cast<QPushButton*>(obj);
-
-    const QString text = pb->text();
-
-    if(text.isEmpty())
-    {
-        const QString text = (_player == Item::Crosses ? "X" : "O");
-        pb->setText(text);
-        emit NotifyUserMove(idx,_player);
-        changeUser();
-    }
-
+    emit NotifyUserMove(idx,_player);
+    changeUser();
 }
 
 bool MainWindow::isValid()
@@ -155,17 +124,21 @@ void MainWindow::changeUser()
     const QString name = (_player == Item::Crosses ) ? ui->leX->text() : ui->leO->text();
     const QString text = QString("Make the move %1").arg(name);
     ui->laMove->setText(text);
+
+    for(int i = 0 ;i<9;i++) {
+        QObject* obj = _signalMapper->mapping(i);
+        MarkGraphicItem* pb = qobject_cast<MarkGraphicItem*>(obj);
+        pb->setPlayer(_player);
+    }
 }
 
 void MainWindow::resetBord()
 {
 
     for(int i = 0 ;i<9;i++) {
-
         QObject* obj = _signalMapper->mapping(i);
-        QPushButton* pb = qobject_cast<QPushButton*>(obj);
-        pb->setText("");
-
+        MarkGraphicItem* pb = qobject_cast<MarkGraphicItem*>(obj);
+        pb->reset();
     }
 
 }
@@ -174,6 +147,50 @@ void MainWindow::showMessage(const QString text)
 {
     ui->laMessage->setText(text);
     ui->stackedWidget->setCurrentIndex(2);
+}
+
+void MainWindow::init()
+{
+    int poxX = 0;
+    int poxY = 0;
+    int height = 128;
+    int width = 128;
+    int margin = 16;
+    int k = 0;
+
+    int recH = (3*height) + (2*margin)-4;
+    int recW = (3*width) + (2*margin)-4;
+
+    QRect rec(2,2,recW,recH);
+    _screen->addRect(rec,QColor("#000"),QBrush(QColor("#000")));
+
+    for (int i = 0; i < 3; ++i)
+    {
+
+        for(int j =0; j<3; ++j)
+        {
+            MarkGraphicItem* obj = new MarkGraphicItem();
+            _screen->addItem(obj);
+            obj->moveBy(poxX,poxY);
+            poxX += margin;
+            poxX += width;
+            connect(obj, SIGNAL(NotifyClicked()), _signalMapper, SLOT(map()));
+            _signalMapper->setMapping(obj, k);
+            k+=1;
+        }
+        poxY += margin;
+        poxY += height;
+        poxX = 0;
+    }
+
+    connect(_signalMapper, SIGNAL(mapped(int)),
+            this, SLOT(clicked(int)));
+}
+
+void MainWindow::showEvent(QShowEvent *event)
+{
+    ui->graphicsView->fitInView(ui->graphicsView->sceneRect(),Qt::KeepAspectRatio);
+    QMainWindow::showEvent(event);
 }
 
 void MainWindow::on_pbBackMenu_clicked()
@@ -196,7 +213,6 @@ void MainWindow::on_pbBackMenu_clicked()
 
     ui->stackedWidget->setCurrentIndex(0);
 
-
 }
 
 void MainWindow::on_pbBackMenu_2_clicked()
@@ -208,4 +224,11 @@ void MainWindow::on_pbPlay_clicked()
 {
     resetBord();
     ui->stackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::on_stackedWidget_currentChanged(int arg1)
+{
+    if(arg1 == 1) {
+    ui->graphicsView->fitInView(ui->graphicsView->sceneRect(),Qt::KeepAspectRatio);
+    }
 }

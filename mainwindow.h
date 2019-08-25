@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSignalMapper>
 #include <QPushButton>
+#include <QGraphicsScene>
 #include "item.h"
 
 
@@ -75,6 +76,8 @@ private slots:
 
     void on_pbPlay_clicked();
 
+    void on_stackedWidget_currentChanged(int arg1);
+
 private:
     /**
      * @brief Change the current user to the next player.
@@ -87,14 +90,20 @@ private:
      */
     void resetBord();
     void showMessage(const QString text);
+    void init();
 
     Ui::MainWindow *ui;
     QSignalMapper* _signalMapper; /**< Mapper storing signals buttons */
     Item _player; /**< Actual player*/
-    int _scoreCross; /**< TODO: describe */
-    int _scoreNoughts; /**< TODO: describe */
+    int _scoreCross;
+    int _scoreNoughts;
+    QGraphicsScene* _screen;
 
 
+
+    // QWidget interface
+protected:
+    void showEvent(QShowEvent *event) override;
 };
 
 #endif // MAINWINDOW_H

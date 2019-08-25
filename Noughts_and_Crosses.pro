@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    nacmodel.cpp
+    nacmodel.cpp \
+    markgraphicitem.cpp
 
 HEADERS  += mainwindow.h \
     nacmodel.h \
-    item.h
+    item.h \
+    markgraphicitem.h
 
 FORMS    += mainwindow.ui
